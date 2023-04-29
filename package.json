@@ -9,15 +9,42 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:php"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "vscode-laravel-goto-policy.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "laravel-goto-policy.gotoPolicy",
+        "title": "Laravel Goto Policy",
+        "description": "Quickly jump to a policy class in Laravel"
       }
-    ]
+    ],  
+    "configuration": {
+      "type": "object",
+      "title": "Laravel Goto Policy",
+      "properties": {
+        "laravel_goto_policy.policyPath": {
+          "type": "string",
+          "default": "app/Policies"
+        },
+        "laravel_goto_policy.abilityRegex":{
+          "type": "string",
+          "default": "(?<=\\$this->authorize\\(\\s*')[^']*(?='\\s*,)",
+          "description": "Custom regex to find the policy's ability name"
+        },
+        "laravel_goto_policy.argumentRegex":{
+          "type": "string",
+          "default": "(?<=\\$this->authorize\\(\\s*'\\w*',\\s*)[^)\\s]*(?=\\);)",
+          "description": "Custom regex to find the policy's argument"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
