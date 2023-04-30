@@ -14,31 +14,31 @@ export default class HoverProvider implements BaseHoverProvider {
     document: TextDocument,
     position: Position
   ): ProviderResult<Hover> {
-    const config = workspace.getConfiguration("laravel_goto_policy");
-    const abilityRegex = new RegExp(config.abilityRegex);
-    const argumentRegex = new RegExp(config.argumentRegex);
-    const abilityHoverRange = document.getWordRangeAtPosition(
-      position,
-      abilityRegex
-    );
+    try {
+      const config = workspace.getConfiguration("laravel_goto_policy");
+      const policyRegex = new RegExp(config.policyRegex);
+      const abilityRegex = new RegExp(config.abilityRegex);
+      const argumentRegex = new RegExp(config.argumentRegex);
 
-    console.log(123);
+      const policyHoverRange = document.getWordRangeAtPosition(
+        position,
+        policyRegex
+      );
 
-    if (!abilityHoverRange) {
-      console.log("no abilityHoverRange");
+      if (!policyHoverRange) {
+        return;
+      }
 
-      return;
+      const policy = document.getText(policyHoverRange);
+      const ability = policy.match(abilityRegex)?.[0] as string;
+      const argument = policy.match(argumentRegex)?.[0] as string;
+
+      const policyFile = Helpers.parseAbilityAndArgument(ability, argument);
+      const policyPath = Helpers.getPolicyPath(policyFile);
+
+      return new Hover(new MarkdownString(`*${policyFile}*: ${policyPath}`));
+    } catch (exception) {
+      console.log(exception);
     }
-
-    const ability = document.getText(abilityHoverRange);
-    const policyText = document.lineAt(position.line).text.trim();
-    const argument = policyText.match(argumentRegex)?.[0] as string;
-    const policyFile = Helpers.parseAbilityAndArgument(ability, argument);
-
-    const policyPath = Helpers.getPolicyPath(policyFile);
-
-    console.log("HoverProvider.provideHover", ability, policyPath);
-
-    return new Hover(new MarkdownString(`*${policyFile}*: ${policyPath}`));
   }
 }

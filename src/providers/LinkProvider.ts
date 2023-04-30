@@ -13,48 +13,72 @@ import Helpers from "../helpers";
 import { existsSync } from "fs";
 
 export default class LinkProvider implements DocumentLinkProvider {
+  private fargment: number = 1;
+
   provideDocumentLinks(
     document: TextDocument,
     token: CancellationToken
   ): ProviderResult<DocumentLink[]> {
-    const documentLinks: DocumentLink[] = [];
-    const config = workspace.getConfiguration("laravel_goto_policy");
-    const workspacePath = workspace.getWorkspaceFolder(document.uri)?.uri
-      .fsPath;
+    try {
+      const documentLinks: DocumentLink[] = [];
+      const config = workspace.getConfiguration("laravel_goto_policy");
+      const policyRegex = new RegExp(config.policyRegex);
+      const abilityRegex = new RegExp(config.abilityRegex);
+      const argumentRegex = new RegExp(config.argumentRegex);
+      const workspacePath = workspace.getWorkspaceFolder(document.uri)?.uri
+        .fsPath;
 
-    const argumentRegex = new RegExp(config.argumentRegex);
-    let index = 0;
+      let index = 0;
 
-    while (index < document.lineCount) {
-      const line = document.lineAt(index);
-      const result = line.text.match(argumentRegex);
+      while (index < document.lineCount) {
+        const line = document.lineAt(index);
+        const policyLineText = line.text.match(policyRegex);
 
-      if (result !== null) {
-        for (let item of result) {
-          const policyFile = Helpers.parseAbilityAndArgument("item", item);
-          const policyPath = Helpers.getPolicyPath(policyFile);
-          const policyPathUri = Uri.file(`${workspacePath}/${policyPath}.php`);
+        if (policyLineText !== null) {
+          for (let policyText of policyLineText) {
+            const ability = policyText.match(abilityRegex)?.[0] as string;
+            const argument = policyText.match(argumentRegex)?.[0] as string;
+            const policyFile = Helpers.parseAbilityAndArgument(
+              ability,
+              argument
+            );
+            const policyPath = Helpers.getPolicyPath(policyFile);
+            const policyFullPath = `${workspacePath}/${policyPath}.php`;
+            const fragment = Helpers.getAbilityFragment(
+              ability,
+              policyFullPath
+            ).then((fragment) => {
+              this.fargment = fragment + 1;
+            });
 
-          console.log(policyPathUri);
+            const policyPathUri = Uri.file(policyFullPath).with({
+              fragment: `L${this.fargment}`,
+            });
 
-          if (!existsSync(policyPathUri.path)) {
-            continue;
+            if (!existsSync(policyPathUri.path)) {
+              continue;
+            }
+
+            const start = new Position(
+              line.lineNumber,
+              line.text.indexOf(policyText)
+            );
+            const end = start.translate(0, policyText.length);
+
+            const range = new Range(start, end);
+
+            const documentLink = new DocumentLink(range, policyPathUri);
+
+            documentLinks.push(documentLink);
           }
-
-          const start = new Position(line.lineNumber, line.text.indexOf(item));
-          const end = start.translate(0, item.length);
-
-          const range = new Range(start, end);
-
-          const documentLink = new DocumentLink(range, policyPathUri);
-
-          documentLinks.push(documentLink);
         }
+
+        index++;
       }
 
-      index++;
+      return documentLinks;
+    } catch (exception) {
+      console.log(exception);
     }
-
-    return documentLinks;
   }
 }

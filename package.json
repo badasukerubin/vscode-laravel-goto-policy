@@ -33,14 +33,19 @@
           "type": "string",
           "default": "app/Policies"
         },
+        "laravel_goto_policy.policyRegex":{
+          "type": "string",
+          "default": "(?<=\\$this->authorize\\()\\s*[^)]+\\s*(?=\\);)",
+          "description": "Custom regex to find the policy"
+        },
         "laravel_goto_policy.abilityRegex":{
           "type": "string",
-          "default": "(?<=\\$this->authorize\\(\\s*')[^']*(?='\\s*,)",
+          "default": "(?<=')[^']+(?=')",
           "description": "Custom regex to find the policy's ability name"
         },
         "laravel_goto_policy.argumentRegex":{
           "type": "string",
-          "default": "(?<=\\$this->authorize\\(\\s*'\\w*',\\s*)[^)\\s]*(?=\\);)",
+          "default": "(?<=, )\\w+::\\w+",
           "description": "Custom regex to find the policy's argument"
         }
       }
