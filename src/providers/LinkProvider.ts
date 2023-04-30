@@ -1,5 +1,4 @@
 import {
-  CancellationToken,
   DocumentLink,
   DocumentLinkProvider,
   Position,
@@ -11,20 +10,17 @@ import {
 } from "vscode";
 import Helpers from "../helpers";
 import { existsSync } from "fs";
+import Provider from "./Provider";
 
-export default class LinkProvider implements DocumentLinkProvider {
-  private fargment: number = 1;
+export default class LinkProvider
+  extends Provider
+  implements DocumentLinkProvider
+{
+  private fragment: number = 1;
 
-  provideDocumentLinks(
-    document: TextDocument,
-    token: CancellationToken
-  ): ProviderResult<DocumentLink[]> {
+  provideDocumentLinks(document: TextDocument): ProviderResult<DocumentLink[]> {
     try {
       const documentLinks: DocumentLink[] = [];
-      const config = workspace.getConfiguration("laravel_goto_policy");
-      const policyRegex = new RegExp(config.policyRegex);
-      const abilityRegex = new RegExp(config.abilityRegex);
-      const argumentRegex = new RegExp(config.argumentRegex);
       const workspacePath = workspace.getWorkspaceFolder(document.uri)?.uri
         .fsPath;
 
@@ -32,12 +28,14 @@ export default class LinkProvider implements DocumentLinkProvider {
 
       while (index < document.lineCount) {
         const line = document.lineAt(index);
-        const policyLineText = line.text.match(policyRegex);
+        const policyLineText = line.text.match(this.policyRegex);
 
         if (policyLineText !== null) {
           for (let policyText of policyLineText) {
-            const ability = policyText.match(abilityRegex)?.[0] as string;
-            const argument = policyText.match(argumentRegex)?.[0] as string;
+            const ability = policyText.match(this.abilityRegex)?.[0] as string;
+            const argument = policyText.match(
+              this.argumentRegex
+            )?.[0] as string;
             const policyFile = Helpers.parseAbilityAndArgument(
               ability,
               argument
@@ -47,13 +45,14 @@ export default class LinkProvider implements DocumentLinkProvider {
             const fragment = Helpers.getAbilityFragment(
               ability,
               policyFullPath
-            ).then((fragment) => {
-              this.fargment = fragment + 1;
-            });
+            );
+            this.fragment = fragment;
 
             const policyPathUri = Uri.file(policyFullPath).with({
-              fragment: `L${this.fargment}`,
+              fragment: `L${this.fragment}`,
             });
+
+            console.log(policyPathUri);
 
             if (!existsSync(policyPathUri.path)) {
               continue;

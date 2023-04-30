@@ -13,7 +13,7 @@ export default class Helpers {
     return policyPath;
   }
 
-  static async getAbilityFragment(
+  static async asyncGetAbilityFragment(
     ability: string,
     policyPath: string
   ): Promise<number> {
@@ -24,5 +24,24 @@ export default class Helpers {
 
       return document.positionAt(index).line;
     });
+  }
+
+  static getAbilityFragment(ability: string, policyPath: string): number {
+    let line: string;
+    let lineNumber = 0;
+    const lineByLine = require("n-readlines");
+    const file = new lineByLine(policyPath);
+    const abilityMethod = `function ${ability}(`;
+
+    while ((line = file.next())) {
+      lineNumber++;
+      line = line.toString();
+
+      if (line.toString().includes(abilityMethod)) {
+        return lineNumber;
+      }
+    }
+
+    return -1;
   }
 }

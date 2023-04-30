@@ -5,24 +5,22 @@ import {
   Position,
   ProviderResult,
   TextDocument,
-  workspace,
 } from "vscode";
 import Helpers from "../helpers";
+import Provider from "./Provider";
 
-export default class HoverProvider implements BaseHoverProvider {
+export default class HoverProvider
+  extends Provider
+  implements BaseHoverProvider
+{
   public provideHover(
     document: TextDocument,
     position: Position
   ): ProviderResult<Hover> {
     try {
-      const config = workspace.getConfiguration("laravel_goto_policy");
-      const policyRegex = new RegExp(config.policyRegex);
-      const abilityRegex = new RegExp(config.abilityRegex);
-      const argumentRegex = new RegExp(config.argumentRegex);
-
       const policyHoverRange = document.getWordRangeAtPosition(
         position,
-        policyRegex
+        this.policyRegex
       );
 
       if (!policyHoverRange) {
@@ -30,8 +28,8 @@ export default class HoverProvider implements BaseHoverProvider {
       }
 
       const policy = document.getText(policyHoverRange);
-      const ability = policy.match(abilityRegex)?.[0] as string;
-      const argument = policy.match(argumentRegex)?.[0] as string;
+      const ability = policy.match(this.abilityRegex)?.[0] as string;
+      const argument = policy.match(this.argumentRegex)?.[0] as string;
 
       const policyFile = Helpers.parseAbilityAndArgument(ability, argument);
       const policyPath = Helpers.getPolicyPath(policyFile);

@@ -24,7 +24,7 @@
         "title": "Laravel Goto Policy",
         "description": "Quickly jump to a policy class in Laravel"
       }
-    ],  
+    ],
     "configuration": {
       "type": "object",
       "title": "Laravel Goto Policy",
@@ -33,17 +33,17 @@
           "type": "string",
           "default": "app/Policies"
         },
-        "laravel_goto_policy.policyRegex":{
+        "laravel_goto_policy.policyRegex": {
           "type": "string",
           "default": "(?<=\\$this->authorize\\()\\s*[^)]+\\s*(?=\\);)",
           "description": "Custom regex to find the policy"
         },
-        "laravel_goto_policy.abilityRegex":{
+        "laravel_goto_policy.abilityRegex": {
           "type": "string",
           "default": "(?<=')[^']+(?=')",
           "description": "Custom regex to find the policy's ability name"
         },
-        "laravel_goto_policy.argumentRegex":{
+        "laravel_goto_policy.argumentRegex": {
           "type": "string",
           "default": "(?<=, )\\w+::\\w+",
           "description": "Custom regex to find the policy's argument"
@@ -63,19 +63,23 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.77.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
+    "@types/n-readlines": "^1.0.3",
     "@types/node": "16.x",
+    "@types/vscode": "^1.77.0",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
+    "@vscode/test-electron": "^2.3.0",
     "eslint": "^8.39.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^5.0.4",
     "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
     "webpack": "^5.81.0",
-    "webpack-cli": "^5.0.2",
-    "@vscode/test-electron": "^2.3.0"
+    "webpack-cli": "^5.0.2"
+  },
+  "dependencies": {
+    "n-readlines": "^1.0.1"
   }
 }
