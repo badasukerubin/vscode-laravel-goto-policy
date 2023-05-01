@@ -1,10 +1,58 @@
 import { workspace } from "vscode";
 
 export default class Helpers {
-  static parseAbilityAndArgument(ability: string, argument: string): string {
-    const policyFile = argument.replace(/::class/, "Policy");
+  dataTypes = {
+    string: "string",
+    array: "array",
+  };
 
-    return policyFile;
+  static getAbility(ability: string): string[] {
+    ability = ability.replace(/['"]+/g, "");
+
+    if (ability.startsWith("[")) {
+      ability = ability.replace("[", "").replace("]", "");
+
+      return ability.split(",").map((ability) => {
+        return ability.trim();
+      });
+    } else {
+      return [ability];
+    }
+  }
+
+  static getArgument(argument: string): string {
+    argument = argument.replace(/['"]+/g, "");
+
+    if (argument.startsWith("[")) {
+      argument = argument.replace("[", "").replace("]", "");
+
+      return argument.split(",")?.[0];
+    } else {
+      return argument;
+    }
+  }
+
+  static parseArgument(argument: string): string {
+    if (argument.includes("::class")) {
+      return argument.replace(/::class/, "Policy");
+    }
+
+    if (argument.startsWith("$")) {
+      if (argument.startsWith("$this->")) {
+        argument = argument.replace("this->", "");
+      }
+
+      if (argument.includes("->")) {
+        argument = argument.split("->")[1];
+      }
+
+      return argument
+        .replace("$", "")
+        .replace(/^\w/, (c) => c.toUpperCase())
+        .concat("Policy");
+    }
+
+    return argument;
   }
 
   static getPolicyPath(policyFile: string): string {

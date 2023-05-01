@@ -27,14 +27,21 @@ export default class HoverProvider
         return;
       }
 
-      const policy = document.getText(policyHoverRange);
-      const ability = policy.match(this.abilityRegex)?.[0] as string;
-      const argument = policy.match(this.argumentRegex)?.[0] as string;
+      const policyText = document.getText(policyHoverRange);
+      const abilityText = policyText.match(this.abilityRegex)?.[0] as string;
+      const argumentText = policyText.match(this.argumentRegex)?.[0] as string;
 
-      const policyFile = Helpers.parseAbilityAndArgument(ability, argument);
+      const ability = Helpers.getAbility(abilityText);
+      const argument = Helpers.getArgument(argumentText);
+
+      const policyFile = Helpers.parseArgument(argument);
       const policyPath = Helpers.getPolicyPath(policyFile);
 
-      return new Hover(new MarkdownString(`*${policyFile}*: ${policyPath}`));
+      const markdownStrings = ability.map((ability) => {
+        return new MarkdownString(`**${ability}**: ${policyPath}::${ability}`);
+      });
+
+      return new Hover(markdownStrings);
     } catch (exception) {
       console.log(exception);
     }

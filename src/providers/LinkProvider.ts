@@ -32,14 +32,17 @@ export default class LinkProvider
 
         if (policyLineText !== null) {
           for (let policyText of policyLineText) {
-            const ability = policyText.match(this.abilityRegex)?.[0] as string;
-            const argument = policyText.match(
+            const abilityText = policyText.match(
+              this.abilityRegex
+            )?.[0] as string;
+            const argumentText = policyText.match(
               this.argumentRegex
             )?.[0] as string;
-            const policyFile = Helpers.parseAbilityAndArgument(
-              ability,
-              argument
-            );
+
+            const ability = Helpers.getAbility(abilityText)?.[0];
+            const argument = Helpers.getArgument(argumentText);
+
+            const policyFile = Helpers.parseArgument(argument);
             const policyPath = Helpers.getPolicyPath(policyFile);
             const policyFullPath = `${workspacePath}/${policyPath}.php`;
             const fragment = Helpers.getAbilityFragment(
@@ -51,8 +54,6 @@ export default class LinkProvider
             const policyPathUri = Uri.file(policyFullPath).with({
               fragment: `L${this.fragment}`,
             });
-
-            console.log(policyPathUri);
 
             if (!existsSync(policyPathUri.path)) {
               continue;

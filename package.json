@@ -31,7 +31,7 @@
       "properties": {
         "laravel_goto_policy.policyPath": {
           "type": "string",
-          "default": "app/Policies"
+          "default": "App/Policies"
         },
         "laravel_goto_policy.policyRegex": {
           "type": "string",
@@ -40,12 +40,12 @@
         },
         "laravel_goto_policy.abilityRegex": {
           "type": "string",
-          "default": "(?<=')[^']+(?=')",
-          "description": "Custom regex to find the policy's ability name"
+          "default": "(?<=,|^)\\s*('[^']*'|(\\[[^\\]]*\\]))\\s*(?=,|$)",
+          "description": "Custom regex to find the policy's ability"
         },
         "laravel_goto_policy.argumentRegex": {
           "type": "string",
-          "default": "(?<=, )\\w+::\\w+",
+          "default": "(?<=, )([^,\\[\\]]+|\\[[^]]+\\]+|\\[[\\w\\s,]*\\]+|\\[[^]*\\])(?=\\s*$)",
           "description": "Custom regex to find the policy's argument"
         }
       }

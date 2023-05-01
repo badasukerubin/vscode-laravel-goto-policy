@@ -3,8 +3,6 @@ import HoverProvider from "./providers/HoverProvider";
 import LinkProvider from "./providers/LinkProvider";
 
 export function activate(context: ExtensionContext) {
-  console.log(123);
-
   const language = ["php"];
 
   const hover = languages.registerHoverProvider(language, new HoverProvider());
