@@ -11,16 +11,7 @@ export function activate(context: ExtensionContext) {
     new LinkProvider()
   );
 
-  const disposable = commands.registerCommand(
-    "vscode-laravel-goto-policy.helloWorld",
-    () => {
-      window.showInformationMessage(
-        "Hello World from vscode-laravel-goto-policy!"
-      );
-    }
-  );
-
-  context.subscriptions.push(hover, link, disposable);
+  context.subscriptions.push(hover, link);
 }
 
 export function deactivate() {}

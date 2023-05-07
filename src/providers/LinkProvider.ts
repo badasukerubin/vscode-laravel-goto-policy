@@ -43,8 +43,13 @@ export default class LinkProvider
             const argument = Helpers.getArgument(argumentText);
 
             const policyFile = Helpers.parseArgument(argument);
-            const policyPath = Helpers.getPolicyPath(policyFile);
-            const policyFullPath = `${workspacePath}/${policyPath}.php`;
+            const policyFilePath = Helpers.getPolicyFilePath(policyFile);
+            const policyFullPath = `${workspacePath}/${policyFilePath}.php`;
+
+            if (!existsSync(policyFullPath)) {
+              continue;
+            }
+
             const fragment = Helpers.getAbilityFragment(
               ability,
               policyFullPath
@@ -54,10 +59,6 @@ export default class LinkProvider
             const policyPathUri = Uri.file(policyFullPath).with({
               fragment: `L${this.fragment}`,
             });
-
-            if (!existsSync(policyPathUri.path)) {
-              continue;
-            }
 
             const start = new Position(
               line.lineNumber,

@@ -1,10 +1,7 @@
 import { workspace } from "vscode";
 
 export default class Helpers {
-  dataTypes = {
-    string: "string",
-    array: "array",
-  };
+  static config = workspace.getConfiguration("laravel_goto_policy");
 
   static getAbility(ability: string): string[] {
     ability = ability.replace(/['"]+/g, "");
@@ -43,7 +40,7 @@ export default class Helpers {
       }
 
       if (argument.includes("->")) {
-        argument = argument.split("->")[1];
+        argument = argument.split("->").pop() as string;
       }
 
       return argument
@@ -55,10 +52,11 @@ export default class Helpers {
     return argument;
   }
 
-  static getPolicyPath(policyFile: string): string {
-    const policyPath = `App/Policies/${policyFile}`;
+  static getPolicyFilePath(policyFile: string): string {
+    const policyPath = this.config.policyPath ?? "app/Policies";
+    const policyFilePath = `${policyPath}/${policyFile}`;
 
-    return policyPath;
+    return policyFilePath;
   }
 
   static async asyncGetAbilityFragment(
@@ -76,7 +74,7 @@ export default class Helpers {
 
   static getAbilityFragment(ability: string, policyPath: string): number {
     let line: string;
-    let lineNumber = 0;
+    let lineNumber = 1;
     const lineByLine = require("n-readlines");
     const file = new lineByLine(policyPath);
     const abilityMethod = `function ${ability}(`;
@@ -86,10 +84,10 @@ export default class Helpers {
       line = line.toString();
 
       if (line.toString().includes(abilityMethod)) {
-        return lineNumber;
+        return lineNumber - 1;
       }
     }
 
-    return -1;
+    return lineNumber;
   }
 }

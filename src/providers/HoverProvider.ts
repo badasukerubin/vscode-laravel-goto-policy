@@ -35,10 +35,12 @@ export default class HoverProvider
       const argument = Helpers.getArgument(argumentText);
 
       const policyFile = Helpers.parseArgument(argument);
-      const policyPath = Helpers.getPolicyPath(policyFile);
+      const policyFilePath = Helpers.getPolicyFilePath(policyFile);
 
       const markdownStrings = ability.map((ability) => {
-        return new MarkdownString(`**${ability}**: ${policyPath}::${ability}`);
+        return new MarkdownString(
+          `**${ability}**: ${policyFilePath}::${ability}`
+        );
       });
 
       return new Hover(markdownStrings);
