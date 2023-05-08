@@ -3,7 +3,7 @@ import HoverProvider from "./providers/HoverProvider";
 import LinkProvider from "./providers/LinkProvider";
 
 export function activate(context: ExtensionContext) {
-  const language = ["php"];
+  const language = ["php", "blade"];
 
   const hover = languages.registerHoverProvider(language, new HoverProvider());
   const link = languages.registerDocumentLinkProvider(

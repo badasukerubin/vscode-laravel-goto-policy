@@ -4,6 +4,7 @@
   "description": "Quickly jump to a policy class in Laravel",
   "version": "0.0.1",
   "publisher": "badasukerubin",
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.77.0"
   },
@@ -11,7 +12,8 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onLanguage:php"
+    "onLanguage:php",
+		"onLanguage:blade"
   ],
   "repository": {
 		"type": "git",
@@ -19,17 +21,6 @@
 	},
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "vscode-laravel-goto-policy.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "laravel-goto-policy.gotoPolicy",
-        "title": "Laravel Goto Policy",
-        "description": "Quickly jump to a policy class in Laravel"
-      }
-    ],
     "configuration": {
       "type": "object",
       "title": "Laravel Goto Policy",
@@ -40,7 +31,7 @@
         },
         "laravel_goto_policy.policyRegex": {
           "type": "string",
-          "default": "(?<=\\$this->authorize\\()\\s*[^)]+\\s*(?=\\);)",
+          "default": "(?<=\\b(?:\\$this->)?(?:Gate::)?(?:authorize|inspect|can|elsecan|canany|elsecanany|cannot|elsecannot)\\()[\\s\\S]*?(?=\\))",
           "description": "Custom regex to find the policy"
         },
         "laravel_goto_policy.abilityRegex": {

@@ -12,9 +12,9 @@ export default class Helpers {
       return ability.split(",").map((ability) => {
         return ability.trim();
       });
-    } else {
-      return [ability];
     }
+
+    return [ability.trim()];
   }
 
   static getArgument(argument: string): string {
@@ -31,6 +31,10 @@ export default class Helpers {
 
   static parseArgument(argument: string): string {
     if (argument.includes("::class")) {
+      if (argument.includes("\\")) {
+        argument = argument.split("\\").pop() as string;
+      }
+
       return argument.replace(/::class/, "Policy");
     }
 
