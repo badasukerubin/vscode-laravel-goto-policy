@@ -4,7 +4,7 @@
   "description": "Quickly jump to a policy class in Laravel",
   "version": "1.0.0",
   "publisher": "badasukerubin",
-  "icon": "src/images/icon.png",
+  "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.77.0"
   },

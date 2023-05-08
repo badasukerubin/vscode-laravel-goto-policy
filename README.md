@@ -11,7 +11,7 @@ This extension provides a quick way to navigate to a method in the policy class.
 
 ## Preview
 
-![Preview](src/images/preview.gif)
+![Preview](images/preview.gif)
 
 ## Extension Settings
 
