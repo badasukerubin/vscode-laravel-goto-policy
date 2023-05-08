@@ -2,7 +2,7 @@
   "name": "vscode-laravel-goto-policy",
   "displayName": "Laravel Goto Policy",
   "description": "Quickly jump to a policy class in Laravel",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "publisher": "badasukerubin",
   "icon": "src/images/icon.png",
   "engines": {
@@ -13,12 +13,12 @@
   ],
   "activationEvents": [
     "onLanguage:php",
-		"onLanguage:blade"
+    "onLanguage:blade"
   ],
   "repository": {
-		"type": "git",
-		"url": "https://github.com/badasukerubin/vscode-laravel-goto-policy"
-	},
+    "type": "git",
+    "url": "https://github.com/badasukerubin/vscode-laravel-goto-policy"
+  },
   "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
